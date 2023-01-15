@@ -1,7 +1,9 @@
+import 'package:chat_app/services/helpers.dart';
 import 'package:chat_app/view/pages/contacts_page.dart';
 import 'package:chat_app/view/pages/home_page.dart';
 import 'package:chat_app/view/pages/messages_page.dart';
 import 'package:chat_app/view/pages/settings_page.dart';
+import 'package:chat_app/view/widgets/avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -25,6 +27,7 @@ class HomeScreenState extends StatefulWidget {
 
 class _HomeScreenStateState extends State<HomeScreenState> {
   int _indexOfPage = 0;
+  final titlesOfPage = ['Главная', 'Сообщения', 'Контакты', 'Настройки'];
   final pages = const [
     HomePage(),
     MessagesPage(),
@@ -37,12 +40,13 @@ class _HomeScreenStateState extends State<HomeScreenState> {
     return Scaffold(
       bottomNavigationBar: _bottomNavBar(),
       body: Center(child: pages[_indexOfPage]),
+      appBar: _appBar(),
     );
   }
 
   _bottomNavBar() {
     return Container(
-      color: Colors.transparent,
+      color: const Color.fromARGB(59, 0, 0, 0),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
         child: GNav(
@@ -53,27 +57,40 @@ class _HomeScreenStateState extends State<HomeScreenState> {
             padding: const EdgeInsets.all(15),
             onTabChange: (index) => setState(() {
                   _indexOfPage = index;
-                  print(index);
                 }),
             activeColor: Colors.white,
             tabs: const [
               GButton(
                 icon: Icons.home,
-                text: 'Home',
+                text: 'Главная',
               ),
               GButton(
                 icon: Icons.messenger_outline_outlined,
-                text: 'Messages',
+                text: 'Сообщения',
               ),
               GButton(
                 icon: Icons.contact_page_outlined,
-                text: 'Contacts',
+                text: 'Контакты',
               ),
               GButton(
                 icon: Icons.settings,
-                text: 'Settings',
+                text: 'Настройки',
               ),
             ]),
+      ),
+    );
+  }
+
+  _appBar() {
+    return AppBar(
+      backgroundColor: Colors.black12,
+      elevation: 0,
+      title: Text(titlesOfPage[_indexOfPage]),
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 20),
+        child: Avatar.large(
+          url: Helpers.randomPictureUrl(),
+        ),
       ),
     );
   }

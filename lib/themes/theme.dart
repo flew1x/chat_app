@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 abstract class AppColors {
-  static const secondary = Color(0xFF3B76F6);
+  static const secondary = Color.fromARGB(255, 21, 119, 78);
   static const accent = Color(0xFFD6755B);
   static const textDark = Color(0xFF53585A);
   static const textLigth = Color(0xFFF5F5F5);
@@ -12,7 +12,7 @@ abstract class AppColors {
   static const iconDark = Color(0xFFB1B3C1);
   static const textHighlight = secondary;
   static const cardLight = Color(0xFFF9FAFE);
-  static const cardDark = Color(0xFF303334);
+  static const cardDark = Color.fromARGB(255, 15, 15, 15);
 }
 
 abstract class _LightColors {
@@ -21,8 +21,8 @@ abstract class _LightColors {
 }
 
 abstract class _DarkColors {
-  static const background = Color(0xFF1B1E1F);
-  static const card = AppColors.cardDark;
+  static const background = Color.fromARGB(255, 22, 22, 22);
+  static const card = Color.fromARGB(255, 73, 73, 73);
 }
 
 /// Reference to the application theme.
