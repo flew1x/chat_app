@@ -1,3 +1,5 @@
+import 'package:chat_app/view/pages/home_page.dart';
+import 'package:chat_app/view/pages/login_page.dart';
 import 'package:chat_app/view/screens/home_screen.dart';
 import 'package:chat_app/view/screens/start_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';

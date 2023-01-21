@@ -1,5 +1,10 @@
+import 'dart:developer';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_app/model/signHelper.dart';
+import 'package:chat_app/view/pages/home_page.dart';
+import 'package:chat_app/view/screens/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -101,6 +106,16 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: (() {
                       signHelper.signIn(
                           loginTextController, passwordTextController);
+                      FirebaseAuth.instance
+                          .authStateChanges()
+                          .listen((User? user) {
+                        if (user == null) {
+                          log('User is currently signed out!');
+                        } else {
+                          Get.to(const HomeScreen());
+                          log('User is signed in!');
+                        }
+                      });
                     }),
                     lightTheme: false,
                   ),
