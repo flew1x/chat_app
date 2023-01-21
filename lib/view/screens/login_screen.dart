@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,8 +15,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final String _titleText = 'Мы скучали';
-  final String _subtitleText = 'Здравустуйте, войдите в свой аккаунт';
+  final String _titleText = 'ПРИВЕТ';
+  final String _subtitleText = 'Здравcтвуйте, войдите в свой аккаунт';
 
   TextEditingController loginTextController = TextEditingController();
   TextEditingController passwordTextController = TextEditingController();
@@ -37,15 +39,15 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     AnimatedTextKit(
                       animatedTexts: [
-                        TypewriterAnimatedText(_titleText,
-                            speed: const Duration(milliseconds: 100),
+                        WavyAnimatedText(_titleText,
+                            speed: const Duration(milliseconds: 200),
                             textStyle: const TextStyle(
                                 fontSize: 50,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 189, 82, 82))),
+                                color: Colors.limeAccent,
+                                fontWeight: FontWeight.bold)),
                       ],
                       isRepeatingAnimation: false,
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(
