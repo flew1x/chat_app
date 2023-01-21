@@ -1,10 +1,15 @@
+import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/themes/theme.dart';
-import 'package:chat_app/view/screens/screens.dart';
-import 'package:chat_app/view/screens/start_screen.dart';
+import 'package:chat_app/view/pages/auth_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
-void main() => runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -13,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: AppTheme().dark,
-      home: const StartScreen(),
+      home: const AuthPage(),
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
     );

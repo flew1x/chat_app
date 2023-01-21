@@ -1,23 +1,26 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:chat_app/model/signHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../widgets/button.dart';
 import '../widgets/input_field.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginPageState extends State<LoginPage> {
   final String _titleText = 'ПРИВЕТ';
   final String _subtitleText = 'Здравcтвуйте, войдите в свой аккаунт';
 
   TextEditingController loginTextController = TextEditingController();
   TextEditingController passwordTextController = TextEditingController();
+
+  final signHelper = const SignHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +98,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.only(top: 100),
                   child: Button(
                     text: "Войти",
-                    onPressed: (() {}),
+                    onPressed: (() {
+                      signHelper.signIn(
+                          loginTextController, passwordTextController);
+                    }),
                     lightTheme: false,
                   ),
                 )

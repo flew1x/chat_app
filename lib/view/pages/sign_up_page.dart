@@ -4,14 +4,14 @@ import 'package:get/get.dart';
 import '../widgets/button.dart';
 import '../widgets/input_field.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpPageState extends State<SignUpPage> {
   final String _titleText = 'Создайте свой аккаунт';
   final String _subtitleText = 'Это легко! Просто сделайте это!';
 
