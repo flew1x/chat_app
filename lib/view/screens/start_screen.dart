@@ -1,4 +1,5 @@
 import 'package:chat_app/view/screens/login_screen.dart';
+import 'package:chat_app/view/screens/sign_up_screen.dart';
 import 'package:chat_app/view/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,7 +37,7 @@ class StartScreen extends StatelessWidget {
                   Button(
                       text: "Войти",
                       onPressed: () {
-                        Get.to(() => const LoginPage(),
+                        Get.to(() => const LoginScreen(),
                             transition: Transition.rightToLeft);
                       },
                       lightTheme: false),
@@ -47,7 +48,10 @@ class StartScreen extends StatelessWidget {
               ),
               Button(
                   text: "Зарегестрироваться",
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(() => const SignUpScreen(),
+                        transition: Transition.leftToRight);
+                  },
                   lightTheme: true)
             ]),
       ),
