@@ -6,7 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../widgets/glowing_action_button.dart';
+import '../../themes/text styles/chat_screen_text_style.dart';
+import '../widgets/action_button.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key, required this.messageData});
@@ -132,7 +133,7 @@ class _MessageOwnTile extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                 child: Text(
                   message,
-                  style: const TextStyle(fontSize: 15),
+                  style: messagesTextStyle,
                 ),
               ),
             ),
@@ -140,10 +141,7 @@ class _MessageOwnTile extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8, right: 4),
               child: Text(
                 messageDate,
-                style: const TextStyle(
-                    color: AppColors.textFaded,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold),
+                style: timeOfMessageTextStyle,
               ),
             )
           ],
@@ -239,17 +237,12 @@ class _AppBarTitle extends StatelessWidget {
             Text(
               messageData.senderName,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 16),
+              style: nameTextStyle,
             ),
             const SizedBox(
               height: 2,
             ),
-            const Text('Онлайн',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
-                ))
+            Text('Онлайн', style: statusOnlineTextStyle)
           ],
         ))
       ],

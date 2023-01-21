@@ -44,7 +44,7 @@ class _MessageTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.to(ChatScreen(messageData: messageData),
+        Get.to(() => ChatScreen(messageData: messageData),
             transition: Transition.zoom);
       },
       child: Container(
