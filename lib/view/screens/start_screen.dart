@@ -11,7 +11,7 @@ class StartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
+        padding: const EdgeInsets.only(left: 20, right: 20),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -31,18 +31,13 @@ class StartScreen extends StatelessWidget {
               const SizedBox(
                 height: 60,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Button(
-                      text: "Войти",
-                      onPressed: () {
-                        Get.to(() => const LoginPage(),
-                            transition: Transition.rightToLeft);
-                      },
-                      lightTheme: false),
-                ],
-              ),
+              Button(
+                  text: "Войти",
+                  onPressed: () {
+                    Get.to(() => const LoginPage(),
+                        transition: Transition.rightToLeft);
+                  },
+                  lightTheme: false),
               const SizedBox(
                 height: 15,
               ),

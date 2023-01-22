@@ -1,15 +1,10 @@
-import 'dart:developer';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_app/model/signHelper.dart';
-import 'package:chat_app/view/pages/home_page.dart';
-import 'package:chat_app/view/screens/home_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../widgets/button.dart';
-import '../widgets/input_field.dart';
+import '../widgets/sign_input_field.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,54 +26,54 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 30),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AnimatedTextKit(
-                      animatedTexts: [
-                        WavyAnimatedText(_titleText,
-                            speed: const Duration(milliseconds: 200),
-                            textStyle: const TextStyle(
-                                fontSize: 50,
-                                color: Colors.limeAccent,
-                                fontWeight: FontWeight.bold)),
-                      ],
-                      isRepeatingAnimation: false,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: 350,
-                  child: Row(
+      body: Padding(
+        padding: const EdgeInsets.only(left: 30, right: 30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Flexible(
-                        child: Text(
-                          _subtitleText,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontSize: 15,
-                              color: Color.fromARGB(255, 168, 168, 168)),
-                        ),
+                    children: [
+                      AnimatedTextKit(
+                        animatedTexts: [
+                          WavyAnimatedText(_titleText,
+                              speed: const Duration(milliseconds: 200),
+                              textStyle: const TextStyle(
+                                  fontSize: 50,
+                                  color: Colors.limeAccent,
+                                  fontWeight: FontWeight.bold)),
+                        ],
+                        isRepeatingAnimation: false,
                       ),
                     ],
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 35, left: 35),
-                  child: Column(
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    width: 350,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Flexible(
+                          child: Text(
+                            _subtitleText,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontSize: 15,
+                                color: Color.fromARGB(255, 168, 168, 168)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
                     children: [
                       const SizedBox(
                         height: 20,
@@ -86,34 +81,36 @@ class _LoginPageState extends State<LoginPage> {
                       InputField(
                         textController: loginTextController,
                         isPassword: false,
-                        hint: 'Логин',
+                        isRegistration: false,
+                        hint: 'Почта',
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       InputField(
                         hint: "Пароль",
+                        isRegistration: false,
                         textController: passwordTextController,
                         isPassword: true,
                       ),
                     ],
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 100),
-                  child: Button(
-                    text: "Войти",
-                    onPressed: (() {
-                      signHelper.signIn(
-                          loginTextController, passwordTextController);
-                    }),
-                    lightTheme: false,
-                  ),
-                )
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 100),
+                    child: Button(
+                      text: "Войти",
+                      onPressed: (() {
+                        signHelper.signIn(
+                            loginTextController, passwordTextController);
+                      }),
+                      lightTheme: false,
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

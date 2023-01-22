@@ -6,7 +6,6 @@ import 'package:chat_app/view/widgets/button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -22,7 +21,7 @@ class SettingsPage extends StatelessWidget {
             onPressed: () {
               FirebaseAuth.instance.authStateChanges().listen((User? user) {
                 if (user == null) {
-                  Get.to(() => const StartScreen());
+                  Get.off(() => const StartScreen());
                   log('User is currently signed out!');
                 } else {
                   log('User is signed in!');

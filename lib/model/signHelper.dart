@@ -1,10 +1,9 @@
-import 'dart:developer';
+import 'dart:developer' show log;
 
 import 'package:firebase_auth/firebase_auth.dart'
-    show FirebaseAuth, FirebaseAuthException, User, UserCredential;
+    show FirebaseAuth, FirebaseAuthException, User;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../view/screens/home_screen.dart';
 
@@ -27,7 +26,7 @@ class SignHelper extends StatelessWidget {
         if (user == null) {
           log('User is currently signed out!');
         } else {
-          Get.to(() => const HomeScreen());
+          Get.off(() => const HomeScreen());
           log('User is signed in!');
         }
       });
@@ -47,7 +46,7 @@ class SignHelper extends StatelessWidget {
         if (user == null) {
           log('User is currently signed out!');
         } else {
-          Get.to(() => const HomeScreen());
+          Get.off(() => const HomeScreen());
           log('User is signed in!');
         }
       });

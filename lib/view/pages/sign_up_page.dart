@@ -1,14 +1,9 @@
-import 'dart:developer';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_app/model/signHelper.dart';
-import 'package:chat_app/view/pages/home_page.dart';
-import 'package:chat_app/view/screens/home_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../widgets/button.dart';
-import '../widgets/input_field.dart';
+import '../widgets/sign_input_field.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -33,54 +28,45 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AnimatedTextKit(
-                  animatedTexts: [
-                    TypewriterAnimatedText(_titleText,
-                        speed: const Duration(milliseconds: 100),
-                        textStyle: const TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.yellow)),
-                  ],
-                  isRepeatingAnimation: false,
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  _subtitleText,
-                  style: const TextStyle(fontSize: 20),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 35, left: 35),
-              child: Column(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 30, left: 30, right: 30),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AnimatedTextKit(
+                animatedTexts: [
+                  TypewriterAnimatedText(_titleText,
+                      speed: const Duration(milliseconds: 100),
+                      textStyle: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.yellow)),
+                ],
+                isRepeatingAnimation: false,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                _subtitleText,
+                style: const TextStyle(fontSize: 20),
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              Column(
                 children: [
                   const SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
                   InputField(
                     textController: _loginController,
                     hint: "Логин",
                     isPassword: false,
+                    isRegistration: true,
+                    isLogin: true,
                   ),
                   const SizedBox(
                     height: 20,
@@ -89,6 +75,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     textController: _emailController,
                     hint: "Почта",
                     isPassword: false,
+                    isRegistration: false,
                   ),
                   const SizedBox(
                     height: 20,
@@ -103,6 +90,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     textController: _passwordController,
                     hint: "Пароль",
                     isPassword: true,
+                    isRegistration: true,
                   ),
                   const SizedBox(
                     height: 20,
@@ -110,23 +98,25 @@ class _SignUpPageState extends State<SignUpPage> {
                   InputField(
                     textController: _repeatPasswordController,
                     hint: "Повторите пароль",
+                    isRegistration: true,
                     isPassword: true,
                   ),
                 ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 120),
-              child: Button(
-                text: "Зарегистрироваться",
-                onPressed: () {
-                  signHelper.createUser(_emailController, _passwordController);
-                  signHelper.signIn(_emailController, _passwordController);
-                },
-                lightTheme: false,
-              ),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.only(top: 120),
+                child: Button(
+                  text: "Зарегистрироваться",
+                  onPressed: () {
+                    signHelper.createUser(
+                        _emailController, _passwordController);
+                    signHelper.signIn(_emailController, _passwordController);
+                  },
+                  lightTheme: false,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
