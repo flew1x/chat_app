@@ -1,4 +1,10 @@
+import 'dart:developer';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:chat_app/model/signHelper.dart';
+import 'package:chat_app/view/pages/home_page.dart';
+import 'package:chat_app/view/screens/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../widgets/button.dart';
@@ -20,6 +26,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repeatPasswordController =
       TextEditingController();
+
+  final signHelper = const SignHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +119,10 @@ class _SignUpPageState extends State<SignUpPage> {
               padding: const EdgeInsets.only(top: 120),
               child: Button(
                 text: "Зарегистрироваться",
-                onPressed: () {},
+                onPressed: () {
+                  signHelper.createUser(_emailController, _passwordController);
+                  signHelper.signIn(_emailController, _passwordController);
+                },
                 lightTheme: false,
               ),
             )

@@ -106,16 +106,6 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: (() {
                       signHelper.signIn(
                           loginTextController, passwordTextController);
-                      FirebaseAuth.instance
-                          .authStateChanges()
-                          .listen((User? user) {
-                        if (user == null) {
-                          log('User is currently signed out!');
-                        } else {
-                          Get.to(const HomeScreen());
-                          log('User is signed in!');
-                        }
-                      });
                     }),
                     lightTheme: false,
                   ),
