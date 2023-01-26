@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:chat_app/model/signHelper.dart';
+import 'package:chat_app/services/firebase_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import '../widgets/button.dart';
 import '../widgets/sign_input_field.dart';
@@ -22,7 +23,17 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _repeatPasswordController =
       TextEditingController();
 
-  final signHelper = const SignHelper();
+  void createUser(WidgetRef ref) {
+    ref
+        .read(firebaseHelperProvider)
+        .createUser(_emailController, _passwordController);
+  }
+
+  void signIn(WidgetRef ref) {
+    ref
+        .read(firebaseHelperProvider)
+        .signIn(_emailController, _passwordController);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,9 +119,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Button(
                   text: "Зарегистрироваться",
                   onPressed: () {
-                    signHelper.createUser(
-                        _emailController, _passwordController);
-                    signHelper.signIn(_emailController, _passwordController);
+                    createUser;
+                    signIn;
                   },
                   lightTheme: false,
                 ),

@@ -1,4 +1,4 @@
-import 'package:chat_app/themes/theme.dart';
+import 'package:chat_app/view/themes/theme.dart';
 import 'package:flutter/material.dart';
 
 TextStyle get messagesTextStyle {

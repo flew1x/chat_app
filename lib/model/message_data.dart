@@ -1,17 +1,45 @@
-import 'package:flutter/foundation.dart';
+import '../enum/message_enum.dart';
 
-@immutable
-class MessageData {
-  const MessageData(
-      {required this.senderName,
-      required this.message,
-      required this.messageDate,
-      required this.dateMessage,
-      required this.profilePicture});
+class Message {
+  final String senderId;
+  final String recieverid;
+  final String text;
+  final MessageEnum type;
+  final DateTime timeSent;
+  final String messageId;
+  final bool isSeen;
 
-  final String senderName;
-  final String message;
-  final DateTime messageDate;
-  final String dateMessage;
-  final String profilePicture;
+  Message({
+    required this.senderId,
+    required this.recieverid,
+    required this.text,
+    required this.type,
+    required this.timeSent,
+    required this.messageId,
+    required this.isSeen,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'senderId': senderId,
+      'recieverid': recieverid,
+      'text': text,
+      'type': type.type,
+      'timeSent': timeSent.millisecondsSinceEpoch,
+      'messageId': messageId,
+      'isSeen': isSeen,
+    };
+  }
+
+  factory Message.fromMap(Map<String, dynamic> map) {
+    return Message(
+      senderId: map['senderId'] ?? '',
+      recieverid: map['recieverid'] ?? '',
+      text: map['text'] ?? '',
+      type: (map['type'] as String).toEnum(),
+      timeSent: DateTime.fromMillisecondsSinceEpoch(map['timeSent']),
+      messageId: map['messageId'] ?? '',
+      isSeen: map['isSeen'] ?? false,
+    );
+  }
 }

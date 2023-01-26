@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:chat_app/model/signHelper.dart';
+import 'package:chat_app/services/firebase_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
 import '../widgets/button.dart';
@@ -17,10 +18,14 @@ class _LoginPageState extends State<LoginPage> {
   final String _titleText = 'ПРИВЕТ';
   final String _subtitleText = 'Здравcтвуйте, войдите в свой аккаунт';
 
-  TextEditingController loginTextController = TextEditingController();
-  TextEditingController passwordTextController = TextEditingController();
+  final TextEditingController _emailTextController = TextEditingController();
+  final TextEditingController _passwordTextController = TextEditingController();
 
-  final signHelper = const SignHelper();
+  void signIn(WidgetRef ref) {
+    ref
+        .read(firebaseHelperProvider)
+        .signIn(_emailTextController, _passwordTextController);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 20,
                       ),
                       InputField(
-                        textController: loginTextController,
+                        textController: _emailTextController,
                         isPassword: false,
                         isRegistration: false,
                         hint: 'Почта',
@@ -90,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                       InputField(
                         hint: "Пароль",
                         isRegistration: false,
-                        textController: passwordTextController,
+                        textController: _passwordTextController,
                         isPassword: true,
                       ),
                     ],
@@ -100,8 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Button(
                       text: "Войти",
                       onPressed: (() {
-                        signHelper.signIn(
-                            loginTextController, passwordTextController);
+                        signIn;
                       }),
                       lightTheme: false,
                     ),

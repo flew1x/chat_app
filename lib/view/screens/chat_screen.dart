@@ -1,18 +1,15 @@
 import 'package:chat_app/model/message_data.dart';
-import 'package:chat_app/themes/theme.dart';
-import 'package:chat_app/view/widgets/avatar.dart';
+import 'package:chat_app/view/themes/theme.dart';
 import 'package:chat_app/view/widgets/icon_buttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../themes/text styles/chat_screen_text_style.dart';
+import '../themes/text styles/chat_screen_text_style.dart';
 import '../widgets/action_button.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key, required this.messageData});
-
-  final MessageData messageData;
+  const ChatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +25,6 @@ class ChatScreen extends StatelessWidget {
     return AppBar(
       backgroundColor: Colors.black12,
       elevation: 0,
-      title: _AppBarTitle(
-        messageData: messageData,
-      ),
       leading: Padding(
         padding: const EdgeInsets.only(left: 8),
         child: Center(
@@ -215,16 +209,14 @@ class _DemoMessageList extends StatelessWidget {
 }
 
 class _AppBarTitle extends StatelessWidget {
-  const _AppBarTitle({Key? key, required this.messageData}) : super(key: key);
-
-  final MessageData messageData;
+  const _AppBarTitle({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Avatar.small(
-          url: messageData.profilePicture,
+        CircleAvatar(
+          backgroundColor: Colors.white,
         ),
         const SizedBox(
           width: 16,
@@ -234,11 +226,6 @@ class _AppBarTitle extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              messageData.senderName,
-              overflow: TextOverflow.ellipsis,
-              style: nameTextStyle,
-            ),
             const SizedBox(
               height: 2,
             ),

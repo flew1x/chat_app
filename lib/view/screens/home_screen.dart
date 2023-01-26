@@ -1,9 +1,7 @@
-import 'package:chat_app/services/helpers.dart';
 import 'package:chat_app/view/pages/contacts_page.dart';
 import 'package:chat_app/view/pages/home_page.dart';
 import 'package:chat_app/view/pages/messages_page.dart';
 import 'package:chat_app/view/pages/settings_page.dart';
-import 'package:chat_app/view/widgets/avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -28,11 +26,11 @@ class HomeScreenState extends StatefulWidget {
 class _HomeScreenStateState extends State<HomeScreenState> {
   int _indexOfPage = 0;
   final titlesOfPage = ['Главная', 'Сообщения', 'Контакты', 'Настройки'];
-  final pages = const [
-    HomePage(),
-    MessagesPage(),
-    ContactsPage(),
-    SettingsPage()
+  final pages = [
+    const HomePage(),
+    const MessagesPage(),
+    const ContactsPage(),
+    const SettingsPage()
   ];
 
   @override
@@ -87,11 +85,10 @@ class _HomeScreenStateState extends State<HomeScreenState> {
       elevation: 0,
       title: Text(titlesOfPage[_indexOfPage]),
       leading: Padding(
-        padding: const EdgeInsets.only(left: 20),
-        child: Avatar.large(
-          url: Helpers.randomPictureUrl(),
-        ),
-      ),
+          padding: const EdgeInsets.only(left: 20),
+          child: CircleAvatar(
+            backgroundColor: Colors.white,
+          )),
     );
   }
 }
