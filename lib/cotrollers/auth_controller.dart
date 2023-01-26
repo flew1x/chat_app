@@ -11,6 +11,11 @@ final authControllerProvider = Provider((ref) {
   return AuthController(firebaseHelper: firebaseHelper, ref: ref);
 });
 
+final userDataProvider = FutureProvider((ref) {
+  final authController = ref.watch(authControllerProvider);
+  return authController.getUserData();
+});
+
 class AuthController {
   final FirebaseHelper firebaseHelper;
   final ProviderRef ref;

@@ -30,7 +30,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     log(image.toString());
   }
 
-  void signOut(WidgetRef ref) {
+  void signOut() {
     ref.read(firebaseHelperProvider).signOut();
   }
 
@@ -95,15 +95,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               text: "Выйти",
               onPressed: () {
                 FirebaseAuth.instance.authStateChanges().listen((User? user) {
-                  if (user == null) {
+                  if (user != null) {
+                    signOut();
                     Get.off(() => const StartScreen());
                     log('User is currently signed out!');
                   } else {
                     log('User is signed in!');
                   }
                 });
-
-                signOut;
               },
               lightTheme: true)
         ],

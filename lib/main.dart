@@ -1,6 +1,11 @@
+import 'dart:developer';
+
+import 'package:chat_app/cotrollers/auth_controller.dart';
 import 'package:chat_app/firebase_options.dart';
+import 'package:chat_app/view/screens/home_screen.dart';
+import 'package:chat_app/view/screens/start_screen.dart';
 import 'package:chat_app/view/themes/theme.dart';
-import 'package:chat_app/view/pages/auth_page.dart';
+import 'package:chat_app/view/widgets/loader.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,14 +17,25 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GetMaterialApp(
       theme: AppTheme().dark,
-      home: const AuthPage(),
+      home: ref.watch(userDataProvider).when(
+            data: (user) {
+              if (user == null) {
+                return const StartScreen();
+              }
+              return const HomeScreen();
+            },
+            error: (err, trace) {
+              log(err.toString());
+            },
+            loading: () => const Loader(),
+          ),
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
     );

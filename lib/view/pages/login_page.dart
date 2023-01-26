@@ -7,25 +7,19 @@ import 'package:get/get.dart';
 import '../widgets/button.dart';
 import '../widgets/sign_input_field.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final String _titleText = 'ПРИВЕТ';
   final String _subtitleText = 'Здравcтвуйте, войдите в свой аккаунт';
 
   final TextEditingController _emailTextController = TextEditingController();
   final TextEditingController _passwordTextController = TextEditingController();
-
-  void signIn(WidgetRef ref) {
-    ref
-        .read(firebaseHelperProvider)
-        .signIn(_emailTextController, _passwordTextController);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +99,8 @@ class _LoginPageState extends State<LoginPage> {
                     child: Button(
                       text: "Войти",
                       onPressed: (() {
-                        signIn;
+                        ref.read(firebaseHelperProvider).signIn(
+                            _emailTextController, _passwordTextController);
                       }),
                       lightTheme: false,
                     ),

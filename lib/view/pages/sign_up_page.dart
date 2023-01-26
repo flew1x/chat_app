@@ -6,14 +6,14 @@ import 'package:get/get.dart';
 import '../widgets/button.dart';
 import '../widgets/sign_input_field.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  ConsumerState<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends ConsumerState<SignUpPage> {
   final String _titleText = 'Создайте свой аккаунт';
   final String _subtitleText = 'Это легко! Просто сделайте это!';
 
@@ -22,18 +22,6 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repeatPasswordController =
       TextEditingController();
-
-  void createUser(WidgetRef ref) {
-    ref
-        .read(firebaseHelperProvider)
-        .createUser(_emailController, _passwordController);
-  }
-
-  void signIn(WidgetRef ref) {
-    ref
-        .read(firebaseHelperProvider)
-        .signIn(_emailController, _passwordController);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +107,12 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Button(
                   text: "Зарегистрироваться",
                   onPressed: () {
-                    createUser;
-                    signIn;
+                    ref
+                        .read(firebaseHelperProvider)
+                        .createUser(_emailController, _passwordController);
+                    ref
+                        .read(firebaseHelperProvider)
+                        .signIn(_emailController, _passwordController);
                   },
                   lightTheme: false,
                 ),
