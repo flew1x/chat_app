@@ -64,17 +64,26 @@ class FirebaseHelper {
 
       if (profileAvatar != null) {
         photoUrl = await ref.read(commonFirebaseStorageProvider).storeFile(
-              'profileAvatar/$uid',
+              'profilePic/$uid',
               profileAvatar,
             );
       }
+
+      var user = UserModel(
+        name: username,
+        uid: uid,
+        profileAvatar: photoUrl,
+        isOnline: true,
+      );
+
+      await firestore.collection('users').doc(uid).set(user.toMap());
     } catch (e) {
       log(e.toString());
     }
   }
 
-  Future<void> signIn(
-      TextEditingController email, TextEditingController password) async {
+  Future<void> signIn(TextEditingController email,
+      TextEditingController password, BuildContext context) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.text, password: password.text);
@@ -83,7 +92,13 @@ class FirebaseHelper {
         if (user == null) {
           log('User is currently signed out!');
         } else {
-          Get.off(() => const HomeScreen());
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            ),
+            (route) => false,
+          );
           log('User is signed in!');
         }
       });
@@ -92,13 +107,14 @@ class FirebaseHelper {
     }
   }
 
-  Future<void> signUp(
-      TextEditingController email, TextEditingController password) async {
+  Future<void> signUp(TextEditingController email,
+      TextEditingController password, BuildContext context) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text, password: password.text);
       log("was created");
-      signIn(email, password);
+      // ignore: use_build_context_synchronously
+      signIn(email, password, context);
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (user == null) {
           log('User is currently signed out!');

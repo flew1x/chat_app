@@ -45,12 +45,14 @@ class AuthController {
     return user;
   }
 
-  void signIn(TextEditingController email, TextEditingController password) {
-    firebaseHelper.signIn(email, password);
+  void signIn(TextEditingController email, TextEditingController password,
+      BuildContext context) {
+    firebaseHelper.signIn(email, password, context);
   }
 
-  void signUp(TextEditingController email, TextEditingController password) {
-    firebaseHelper.signUp(email, password);
+  void signUp(TextEditingController email, TextEditingController password,
+      BuildContext context) {
+    firebaseHelper.signUp(email, password, context);
   }
 
   void signOut() {

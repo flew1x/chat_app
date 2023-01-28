@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_app/services/firebase_helper.dart';
+import 'package:chat_app/view/themes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
@@ -98,10 +99,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.only(top: 100),
                     child: Button(
+                      btnClr: AppColors.greenBtn,
                       text: "Войти",
                       onPressed: (() {
                         ref.read(firebaseControllerProvider).signIn(
-                            _emailTextController, _passwordTextController);
+                            _emailTextController,
+                            _passwordTextController,
+                            context);
                       }),
                       lightTheme: false,
                     ),

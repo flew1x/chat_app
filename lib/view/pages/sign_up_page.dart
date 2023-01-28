@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_app/cotrollers/firebase_controller.dart';
 import 'package:chat_app/services/firebase_helper.dart';
+import 'package:chat_app/view/themes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
@@ -106,14 +107,15 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 120),
                 child: Button(
+                  btnClr: AppColors.greenBtn,
                   text: "Зарегистрироваться",
                   onPressed: () {
                     ref
                         .read(firebaseControllerProvider)
-                        .signUp(_emailController, _passwordController);
+                        .signUp(_emailController, _passwordController, context);
                     ref
                         .read(firebaseControllerProvider)
-                        .signIn(_emailController, _passwordController);
+                        .signIn(_emailController, _passwordController, context);
                   },
                   lightTheme: false,
                 ),

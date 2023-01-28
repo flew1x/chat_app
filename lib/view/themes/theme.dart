@@ -13,6 +13,8 @@ abstract class AppColors {
   static const textHighlight = secondary;
   static const cardLight = Color(0xFFF9FAFE);
   static const cardDark = Color.fromARGB(255, 34, 34, 34);
+  static const lightBtn = Color.fromARGB(255, 194, 194, 194);
+  static const greenBtn = Color.fromARGB(255, 44, 179, 73);
 }
 
 abstract class _LightColors {

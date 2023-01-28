@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:chat_app/cotrollers/firebase_controller.dart';
+import 'package:chat_app/view/themes/theme.dart';
 import 'package:chat_app/view/widgets/loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/view/screens/start_screen.dart';
@@ -104,13 +105,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             .listen((User? user) {
                           if (user != null) {
                             signOut();
-                            Get.off(() => const StartScreen());
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const StartScreen(),
+                              ),
+                              (route) => false,
+                            );
                             log('User is currently signed out!');
                           } else {
                             log('User is signed in!');
                           }
                         });
                       },
+                      btnClr: AppColors.lightBtn,
                       lightTheme: true)
                 ],
               ),

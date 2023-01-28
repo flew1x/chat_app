@@ -4,12 +4,14 @@ class Button extends StatelessWidget {
   final String text;
   final Function()? onPressed;
   final bool lightTheme;
+  final Color btnClr;
 
   const Button(
       {Key? key,
       required this.text,
       required this.onPressed,
-      required this.lightTheme})
+      required this.lightTheme,
+      required this.btnClr})
       : super(key: key);
 
   @override
@@ -17,9 +19,7 @@ class Button extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-          backgroundColor: lightTheme
-              ? const Color.fromARGB(255, 202, 202, 202)
-              : const Color.fromARGB(255, 0, 172, 66),
+          backgroundColor: btnClr,
           fixedSize: const Size(345, 55),
           elevation: 0,
           shape: RoundedRectangleBorder(

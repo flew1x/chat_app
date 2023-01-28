@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'package:chat_app/cotrollers/firebase_controller.dart';
-import 'package:chat_app/services/firebase_helper.dart';
 import 'package:chat_app/view/pages/contacts_page.dart';
 import 'package:chat_app/view/pages/home_page.dart';
 import 'package:chat_app/view/pages/messages_page.dart';
@@ -23,6 +22,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+@immutable
 class HomeScreenState extends ConsumerStatefulWidget {
   HomeScreenState({super.key});
 

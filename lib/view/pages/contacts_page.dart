@@ -1,4 +1,3 @@
-import 'package:chat_app/view/widgets/button.dart';
 import 'package:flutter/material.dart';
 
 class ContactsPage extends StatelessWidget {
