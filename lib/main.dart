@@ -1,6 +1,5 @@
 import 'dart:developer';
-
-import 'package:chat_app/cotrollers/auth_controller.dart';
+import 'package:chat_app/cotrollers/firebase_controller.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/view/screens/home_screen.dart';
 import 'package:chat_app/view/screens/start_screen.dart';
@@ -33,6 +32,7 @@ class MyApp extends ConsumerWidget {
             },
             error: (err, trace) {
               log(err.toString());
+              return;
             },
             loading: () => const Loader(),
           ),

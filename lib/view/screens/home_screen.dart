@@ -1,29 +1,37 @@
+import 'dart:developer';
+import 'package:chat_app/cotrollers/firebase_controller.dart';
+import 'package:chat_app/services/firebase_helper.dart';
 import 'package:chat_app/view/pages/contacts_page.dart';
 import 'package:chat_app/view/pages/home_page.dart';
 import 'package:chat_app/view/pages/messages_page.dart';
 import 'package:chat_app/view/pages/settings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+
+import '../../model/user_data.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: HomeScreenState(),
     );
   }
 }
 
-class HomeScreenState extends StatefulWidget {
-  const HomeScreenState({super.key});
+class HomeScreenState extends ConsumerStatefulWidget {
+  HomeScreenState({super.key});
+
+  UserModel? user;
 
   @override
-  State<HomeScreenState> createState() => _HomeScreenStateState();
+  ConsumerState<HomeScreenState> createState() => _HomeScreenStateState();
 }
 
-class _HomeScreenStateState extends State<HomeScreenState> {
+class _HomeScreenStateState extends ConsumerState<HomeScreenState> {
   int _indexOfPage = 0;
   final titlesOfPage = ['Главная', 'Сообщения', 'Контакты', 'Настройки'];
   final pages = [
@@ -32,6 +40,11 @@ class _HomeScreenStateState extends State<HomeScreenState> {
     const ContactsPage(),
     const SettingsPage()
   ];
+
+  void initUser() async {
+    widget.user =
+        await ref.read(firebaseControllerProvider).getCurrentUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +67,7 @@ class _HomeScreenStateState extends State<HomeScreenState> {
             color: Colors.white,
             padding: const EdgeInsets.all(15),
             onTabChange: (index) => setState(() {
+                  initUser();
                   _indexOfPage = index;
                 }),
             activeColor: Colors.white,
@@ -84,8 +98,8 @@ class _HomeScreenStateState extends State<HomeScreenState> {
       backgroundColor: Colors.black12,
       elevation: 0,
       title: Text(titlesOfPage[_indexOfPage]),
-      leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
+      leading: const Padding(
+          padding: EdgeInsets.only(left: 20),
           child: CircleAvatar(
             backgroundColor: Colors.white,
           )),

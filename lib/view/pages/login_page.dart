@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
+import '../../cotrollers/firebase_controller.dart';
 import '../widgets/button.dart';
 import '../widgets/sign_input_field.dart';
 

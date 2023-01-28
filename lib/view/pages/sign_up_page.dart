@@ -1,4 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:chat_app/cotrollers/firebase_controller.dart';
 import 'package:chat_app/services/firebase_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -108,10 +109,10 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   text: "Зарегистрироваться",
                   onPressed: () {
                     ref
-                        .read(firebaseHelperProvider)
-                        .createUser(_emailController, _passwordController);
+                        .read(firebaseControllerProvider)
+                        .signUp(_emailController, _passwordController);
                     ref
-                        .read(firebaseHelperProvider)
+                        .read(firebaseControllerProvider)
                         .signIn(_emailController, _passwordController);
                   },
                   lightTheme: false,

@@ -1,16 +1,16 @@
-import 'dart:developer' show log;
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:chat_app/model/user_data.dart';
-import 'package:chat_app/services/firebase_storage.dart';
-import 'package:firebase_auth/firebase_auth.dart'
-    show FirebaseAuth, FirebaseAuthException, User;
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:chat_app/services/storage_helper.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../view/screens/home_screen.dart';
 
@@ -29,9 +29,54 @@ class FirebaseHelper {
     required this.firestore,
   });
 
-  void signOut() => FirebaseAuth.instance.signOut();
+  Stream<UserModel> userData(String userId) {
+    return firestore.collection('users').doc(userId).snapshots().map(
+          (event) => UserModel.fromMap(
+            event.data()!,
+          ),
+        );
+  }
 
-  void signIn(
+  void setUserState(bool isOnline) async {
+    await firestore.collection('users').doc(auth.currentUser!.uid).update({
+      'isOnline': isOnline,
+    });
+  }
+
+  Future<UserModel?> getCurrentUserData() async {
+    var userData =
+        await firestore.collection('users').doc(auth.currentUser?.uid).get();
+
+    UserModel? user;
+    if (userData.data() != null) {
+      user = UserModel.fromMap(userData.data()!);
+    }
+    return user;
+  }
+
+  void saveData({
+    required String username,
+    required File? profileAvatar,
+    required ProviderRef ref,
+    required BuildContext context,
+  }) async {
+    try {
+      String uid = auth.currentUser!.uid;
+      String photoUrl =
+          'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png';
+
+      if (profileAvatar != null) {
+        photoUrl = await ref.read(commonFirebaseStorageProvider).storeFile(
+              'profilePic/$uid',
+              profileAvatar,
+            );
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<void> signIn(
       TextEditingController email, TextEditingController password) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -50,7 +95,7 @@ class FirebaseHelper {
     }
   }
 
-  void createUser(
+  Future<void> signUp(
       TextEditingController email, TextEditingController password) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -76,53 +121,7 @@ class FirebaseHelper {
     }
   }
 
-  void saveData(
-      {required String username,
-      required File? profileAvatar,
-      required BuildContext context,
-      required ProviderRef ref}) async {
-    try {
-      String uid = auth.currentUser!.uid;
-      String avatarUrl =
-          'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png';
-
-      if (profileAvatar != null) {
-        avatarUrl = await ref
-            .read(commonFirebaseStorageProvider)
-            .storeFile("profileAvatar/$uid", profileAvatar);
-      }
-
-      var user = UserModel(
-          name: username, uid: uid, profileAvatar: avatarUrl, isOnline: true);
-
-      await firestore.collection('users').doc(uid).set(user.toMap());
-    } catch (e) {
-      log(e.toString());
-    }
-  }
-
-  Stream<UserModel> userData(String userId) {
-    return firestore.collection('users').doc(userId).snapshots().map(
-          (event) => UserModel.fromMap(
-            event.data()!,
-          ),
-        );
-  }
-
-  void setUserState(bool isOnline) async {
-    await firestore.collection('users').doc(auth.currentUser!.uid).update({
-      'isOnline': isOnline,
-    });
-  }
-
-  Future<UserModel?> getCurrentUserData() async {
-    var userData =
-        await firestore.collection('users').doc(auth.currentUser?.uid).get();
-
-    UserModel? user;
-    if (userData.data() != null) {
-      user = UserModel.fromMap(userData.data()!);
-    }
-    return user;
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
   }
 }

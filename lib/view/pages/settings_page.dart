@@ -1,7 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:chat_app/cotrollers/firebase_controller.dart';
+import 'package:chat_app/view/screens/screens.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:chat_app/cotrollers/auth_controller.dart';
 import 'package:chat_app/services/firebase_helper.dart';
 import 'package:chat_app/view/screens/start_screen.dart';
 import 'package:chat_app/view/widgets/button.dart';
@@ -25,13 +26,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   void selectImage() async {
     image = await _picker.pickImage(source: ImageSource.gallery);
     imagefile = File(image!.path);
-    ref.read(authControllerProvider).saveUserData(context, "Vlad", imagefile);
     setState(() {});
     log(image.toString());
   }
 
   void signOut() {
-    ref.read(firebaseHelperProvider).signOut();
+    ref.read(firebaseControllerProvider).signOut();
   }
 
   @override
@@ -41,53 +41,52 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       child: Column(
         children: [
           Container(
-            width: double.infinity,
-            height: 130,
-            decoration: const BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color: Color.fromARGB(90, 255, 255, 255), width: 0.5))),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Stack(
-                  children: [
-                    image == null
-                        ? const CircleAvatar(
-                            backgroundImage: NetworkImage(
-                              'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png',
+              width: double.infinity,
+              height: 130,
+              decoration: const BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Color.fromARGB(90, 255, 255, 255),
+                          width: 0.5))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Stack(
+                    children: [
+                      image == null
+                          ? const CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png'),
+                              radius: 50,
+                            )
+                          : CircleAvatar(
+                              backgroundImage: FileImage(imagefile!),
+                              radius: 50,
                             ),
-                            radius: 50,
-                          )
-                        : CircleAvatar(
-                            backgroundImage: FileImage(imagefile!),
-                            radius: 50,
-                          ),
-                    IconButton(
-                      onPressed: selectImage,
-                      icon: const Icon(
-                        Icons.add_a_photo,
-                      ),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      Text(
-                        "Vladislav",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
+                      IconButton(
+                        onPressed: selectImage,
+                        icon: const Icon(
+                          Icons.add_a_photo,
+                        ),
                       ),
                     ],
                   ),
-                )
-              ],
-            ),
-          ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Text(
+                          "Vlad",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 25),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              )),
           const SizedBox(
             height: 20,
           ),

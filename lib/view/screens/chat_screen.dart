@@ -1,4 +1,4 @@
-import 'package:chat_app/model/message_data.dart';
+import 'package:chat_app/model/message_model.dart';
 import 'package:chat_app/view/themes/theme.dart';
 import 'package:chat_app/view/widgets/icon_buttons.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,18 +1,17 @@
 import 'dart:io';
-
-import 'package:chat_app/services/firebase_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/user_data.dart';
+import '../services/firebase_helper.dart';
 
-final authControllerProvider = Provider((ref) {
+final firebaseControllerProvider = Provider((ref) {
   final firebaseHelper = ref.watch(firebaseHelperProvider);
   return AuthController(firebaseHelper: firebaseHelper, ref: ref);
 });
 
 final userDataProvider = FutureProvider((ref) {
-  final authController = ref.watch(authControllerProvider);
+  final authController = ref.watch(firebaseControllerProvider);
   return authController.getUserData();
 });
 
@@ -44,5 +43,23 @@ class AuthController {
   Future<UserModel?> getUserData() async {
     UserModel? user = await firebaseHelper.getCurrentUserData();
     return user;
+  }
+
+  void signIn(
+      TextEditingController email, TextEditingController password) async {
+    await firebaseHelper.signIn(email, password);
+  }
+
+  void signUp(
+      TextEditingController email, TextEditingController password) async {
+    await firebaseHelper.signUp(email, password);
+  }
+
+  void signOut() async {
+    await firebaseHelper.signOut();
+  }
+
+  Future<UserModel?> getCurrentUserData() {
+    return firebaseHelper.getCurrentUserData();
   }
 }
