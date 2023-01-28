@@ -1,9 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:chat_app/cotrollers/firebase_controller.dart';
-import 'package:chat_app/view/screens/screens.dart';
+import 'package:chat_app/view/widgets/loader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:chat_app/services/firebase_helper.dart';
 import 'package:chat_app/view/screens/start_screen.dart';
 import 'package:chat_app/view/widgets/button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,8 +25,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   void selectImage() async {
     image = await _picker.pickImage(source: ImageSource.gallery);
     imagefile = File(image!.path);
+    if (!mounted) return;
+    ref
+        .read(firebaseControllerProvider)
+        .saveUserData(context, "Vlad", imagefile);
+    log(imagefile.toString());
     setState(() {});
-    log(image.toString());
   }
 
   void signOut() {
@@ -36,76 +39,88 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 30, right: 30),
-      child: Column(
-        children: [
-          Container(
-              width: double.infinity,
-              height: 130,
-              decoration: const BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(
-                          color: Color.fromARGB(90, 255, 255, 255),
-                          width: 0.5))),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
+    return ref.watch(userDataProvider).when(
+        data: (user) => Padding(
+              padding: const EdgeInsets.only(left: 30, right: 30),
+              child: Column(
                 children: [
-                  Stack(
-                    children: [
-                      image == null
-                          ? const CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png'),
-                              radius: 50,
-                            )
-                          : CircleAvatar(
-                              backgroundImage: FileImage(imagefile!),
-                              radius: 50,
+                  Container(
+                      width: double.infinity,
+                      height: 130,
+                      decoration: const BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: Color.fromARGB(90, 255, 255, 255),
+                                  width: 0.5))),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Stack(
+                            children: [
+                              user?.profileAvatar == null
+                                  ? const CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png'),
+                                      radius: 50,
+                                    )
+                                  : CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(user!.profileAvatar),
+                                      radius: 50,
+                                    ),
+                              IconButton(
+                                onPressed: selectImage,
+                                icon: const Icon(
+                                  Icons.add_a_photo,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  user?.name != null ? "Vlad" : "Star",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 25),
+                                ),
+                              ],
                             ),
-                      IconButton(
-                        onPressed: selectImage,
-                        icon: const Icon(
-                          Icons.add_a_photo,
-                        ),
-                      ),
-                    ],
+                          )
+                        ],
+                      )),
+                  const SizedBox(
+                    height: 20,
                   ),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "Vlad",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 25),
-                        ),
-                      ],
-                    ),
-                  )
+                  Button(
+                      text: "Выйти",
+                      onPressed: () {
+                        FirebaseAuth.instance
+                            .authStateChanges()
+                            .listen((User? user) {
+                          if (user != null) {
+                            signOut();
+                            Get.off(() => const StartScreen());
+                            log('User is currently signed out!');
+                          } else {
+                            log('User is signed in!');
+                          }
+                        });
+                      },
+                      lightTheme: true)
                 ],
-              )),
-          const SizedBox(
-            height: 20,
-          ),
-          Button(
-              text: "Выйти",
-              onPressed: () {
-                FirebaseAuth.instance.authStateChanges().listen((User? user) {
-                  if (user != null) {
-                    signOut();
-                    Get.off(() => const StartScreen());
-                    log('User is currently signed out!');
-                  } else {
-                    log('User is signed in!');
-                  }
-                });
-              },
-              lightTheme: true)
-        ],
-      ),
-    );
+              ),
+            ),
+        error: (err, trace) {
+          log(err.toString());
+          return const Loader();
+        },
+        loading: () {
+          return const Loader();
+        });
   }
 }

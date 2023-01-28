@@ -45,18 +45,16 @@ class AuthController {
     return user;
   }
 
-  void signIn(
-      TextEditingController email, TextEditingController password) async {
-    await firebaseHelper.signIn(email, password);
+  void signIn(TextEditingController email, TextEditingController password) {
+    firebaseHelper.signIn(email, password);
   }
 
-  void signUp(
-      TextEditingController email, TextEditingController password) async {
-    await firebaseHelper.signUp(email, password);
+  void signUp(TextEditingController email, TextEditingController password) {
+    firebaseHelper.signUp(email, password);
   }
 
-  void signOut() async {
-    await firebaseHelper.signOut();
+  void signOut() {
+    firebaseHelper.signOut();
   }
 
   Future<UserModel?> getCurrentUserData() {

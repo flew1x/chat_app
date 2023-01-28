@@ -100,7 +100,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     child: Button(
                       text: "Войти",
                       onPressed: (() {
-                        ref.read(firebaseHelperProvider).signIn(
+                        ref.read(firebaseControllerProvider).signIn(
                             _emailTextController, _passwordTextController);
                       }),
                       lightTheme: false,

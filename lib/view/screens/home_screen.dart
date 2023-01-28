@@ -5,6 +5,7 @@ import 'package:chat_app/view/pages/contacts_page.dart';
 import 'package:chat_app/view/pages/home_page.dart';
 import 'package:chat_app/view/pages/messages_page.dart';
 import 'package:chat_app/view/pages/settings_page.dart';
+import 'package:chat_app/view/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -94,15 +95,33 @@ class _HomeScreenStateState extends ConsumerState<HomeScreenState> {
   }
 
   _appBar() {
-    return AppBar(
-      backgroundColor: Colors.black12,
-      elevation: 0,
-      title: Text(titlesOfPage[_indexOfPage]),
-      leading: const Padding(
-          padding: EdgeInsets.only(left: 20),
-          child: CircleAvatar(
-            backgroundColor: Colors.white,
-          )),
+    return ref.watch(userDataProvider).when(
+      data: (user) {
+        return AppBar(
+            backgroundColor: Colors.black12,
+            elevation: 0,
+            title: Text(titlesOfPage[_indexOfPage]),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: user?.profileAvatar == null
+                  ? const CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png'),
+                      radius: 50,
+                    )
+                  : CircleAvatar(
+                      backgroundImage: NetworkImage(user!.profileAvatar),
+                      radius: 50,
+                    ),
+            ));
+      },
+      error: (err, track) {
+        log(err.toString());
+        return const Loader();
+      },
+      loading: () {
+        return const Loader();
+      },
     );
   }
 }

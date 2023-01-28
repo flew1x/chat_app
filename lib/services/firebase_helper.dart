@@ -3,14 +3,11 @@ import 'dart:io';
 
 import 'package:chat_app/model/user_data.dart';
 import 'package:chat_app/services/storage_helper.dart';
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 import '../view/screens/home_screen.dart';
 
@@ -67,7 +64,7 @@ class FirebaseHelper {
 
       if (profileAvatar != null) {
         photoUrl = await ref.read(commonFirebaseStorageProvider).storeFile(
-              'profilePic/$uid',
+              'profileAvatar/$uid',
               profileAvatar,
             );
       }
