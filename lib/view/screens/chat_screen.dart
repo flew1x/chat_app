@@ -215,7 +215,7 @@ class _AppBarTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(
+        const CircleAvatar(
           backgroundColor: Colors.white,
         ),
         const SizedBox(
