@@ -2,33 +2,29 @@ import 'package:flutter/foundation.dart';
 
 @immutable
 class UserModel {
-  final String name;
+  final String username;
   final String uid;
   final String profileAvatar;
-  final bool isOnline;
 
   const UserModel({
-    required this.name,
+    required this.username,
     required this.uid,
     required this.profileAvatar,
-    required this.isOnline,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
+      'username': username,
       'uid': uid,
-      'profilePic': profileAvatar,
-      'isOnline': isOnline,
+      'profileAvatar': profileAvatar,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      name: map['name'] ?? '',
+      username: map['username'] ?? '',
       uid: map['uid'] ?? '',
-      profileAvatar: map['profilePic'] ?? '',
-      isOnline: map['isOnline'] ?? false,
+      profileAvatar: map['profileAvatar'] ?? '',
     );
   }
 }

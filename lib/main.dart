@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:chat_app/cotrollers/firebase_controller.dart';
 import 'package:chat_app/firebase_options.dart';
+import 'package:chat_app/view/pages/auth_page.dart';
 import 'package:chat_app/view/screens/home_screen.dart';
 import 'package:chat_app/view/screens/start_screen.dart';
 import 'package:chat_app/view/themes/theme.dart';
@@ -23,19 +24,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GetMaterialApp(
       theme: AppTheme().dark,
-      home: ref.watch(userDataProvider).when(
-            data: (user) {
-              if (user == null) {
-                return const StartScreen();
-              }
-              return const HomeScreen();
-            },
-            error: (err, trace) {
-              log(err.toString());
-              return;
-            },
-            loading: () => const Loader(),
-          ),
+      home: AuthPage(),
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
     );

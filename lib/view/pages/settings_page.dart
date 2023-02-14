@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:chat_app/cotrollers/firebase_controller.dart';
+import 'package:chat_app/services/firebase_helper.dart';
 import 'package:chat_app/view/themes/theme.dart';
 import 'package:chat_app/view/widgets/loader.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -19,17 +20,16 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-  final ImagePicker _picker = ImagePicker();
-  XFile? image;
   File? imagefile;
+  TextEditingController usernameController = TextEditingController();
 
   void _selectImage() async {
-    image = await _picker.pickImage(source: ImageSource.gallery);
-    imagefile = File(image!.path);
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      imagefile = File(image.path);
+    }
     if (!mounted) return;
-    ref
-        .read(firebaseControllerProvider)
-        .saveUserData(context, "Vlad", imagefile);
+    ref.read(firebaseControllerProvider).saveProfileAvatar(context, imagefile);
     log(imagefile.toString());
     DefaultCacheManager().emptyCache();
     imageCache.clear();
@@ -79,16 +79,29 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             ],
                           ),
                           Expanded(
-                            child: Column(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  user?.name != null ? "Vlad" : "Star",
+                                  user?.username == null
+                                      ? "Unknown"
+                                      : user!.username,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 25),
+                                      fontSize: 30),
                                 ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      _renameDialog(context);
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      size: 25,
+                                    ))
                               ],
                             ),
                           )
@@ -190,6 +203,64 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).primaryColor),
                   child: const Text("Добавить"),
+                ),
+              ],
+            );
+          }));
+        });
+  }
+
+  _renameDialog(BuildContext context) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: ((context, setState) {
+            return AlertDialog(
+              backgroundColor: AppColors.cardDark,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              title: const Text(
+                "Изменить ник",
+                textAlign: TextAlign.left,
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: usernameController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.green),
+                            borderRadius: BorderRadius.circular(20)),
+                        errorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.red),
+                            borderRadius: BorderRadius.circular(20)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: Colors.white),
+                            borderRadius: BorderRadius.circular(20))),
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor),
+                  child: const Text("Назад"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    ref.read(firebaseHelperProvider).saveUsername(
+                        username: usernameController.text, context: context);
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor),
+                  child: const Text("Изменить"),
                 ),
               ],
             );

@@ -1,123 +1,168 @@
-import 'package:chat_app/view/themes/theme.dart';
-import 'package:chat_app/view/screens/screens.dart';
-import 'package:faker/faker.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:jiffy/jiffy.dart';
+import 'dart:developer';
 
-class MessagesPage extends StatelessWidget {
-  const MessagesPage({super.key});
+import 'package:chat_app/view/widgets/chat/message_tile.dart';
+import 'package:chat_app/view/widgets/loader.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+
+import '../widgets/action_button.dart';
+
+final _firestore = FirebaseFirestore.instance;
+User? _loggedInuser;
+
+class MessagePage extends StatefulWidget {
+  const MessagePage({super.key});
+
+  @override
+  _MessagePageState createState() => _MessagePageState();
+}
+
+class _MessagePageState extends State<MessagePage> {
+  final _controller = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+
+  late String _messageText;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+    var keyboardVisibilityController = KeyboardVisibilityController();
+    keyboardVisibilityController.onChange.listen((bool isKeyboardVisible) {
+      if (mounted) {
+        setState(() {
+          // Your state change code goes here
+        });
+      }
+    });
+  }
+
+  Future<bool> onBackPress() {
+    return Future.value(false);
+  }
+
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        _loggedInuser = user;
+        log(_loggedInuser.toString());
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        // SliverList(
-        //   delegate: SliverChildBuilderDelegate(_delegate),
-        // )
-      ],
+    return Scaffold(
+      body: SafeArea(
+        child: WillPopScope(
+          onWillPop: onBackPress,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const MessagesStream(),
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Flexible(
+                      child: TextField(
+                        style: const TextStyle(fontSize: 14),
+                        decoration: const InputDecoration(
+                            hintText: 'Сообщение...', border: InputBorder.none),
+                        textInputAction: TextInputAction.send,
+                        keyboardType: TextInputType.multiline,
+                        onSubmitted: (value) {
+                          _controller.clear();
+                          _firestore.collection('messages').add({
+                            'sender': _loggedInuser!.email,
+                            'text': _messageText,
+                            'timestamp': Timestamp.now(),
+                          });
+                        },
+                        maxLines: null,
+                        controller: _controller,
+                        onChanged: (value) {
+                          _messageText = value;
+                        },
+                      ),
+                    ),
+                    Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Padding(
+                            padding: const EdgeInsets.only(left: 12, right: 12),
+                            child: GlowingActionButton(
+                              color: Colors.transparent,
+                              icon: Icons.send_sharp,
+                              onPressed: () {
+                                _controller.clear();
+                                _firestore.collection('messages').add({
+                                  'sender': _loggedInuser!.email,
+                                  'text': _messageText,
+                                  'timestamp': Timestamp.now(),
+                                });
+                              },
+                            ))),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
-
-  // Widget _delegate(BuildContext context, int index) {
-  //   final Faker faker = Faker();
-  //   final date = Helpers.randomDate();
-  //   return _MessageTitle(
-  //       messageData: MessageData(
-  //           senderName: faker.person.name(),
-  //           message: faker.lorem.sentence(),
-  //           messageDate: date,
-  //           dateMessage: Jiffy(date).fromNow(),
-  //           profilePicture: Helpers.randomPictureUrl()));
-  // }
 }
 
-// class _MessageTitle extends StatelessWidget {
-//   const _MessageTitle({required this.messageData});
+class MessagesStream extends StatelessWidget {
+  const MessagesStream({super.key});
 
-// final MessageData messageData;
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore
+          .collection('messages')
+          // Sort the messages by timestamp DESC because we want the newest messages on bottom.
+          .orderBy("timestamp", descending: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        // If we do not have data yet, show a progress indicator.
+        if (!snapshot.hasData) {
+          return const Loader();
+        }
+        // Create the list of message widgets.
 
-@override
-Widget build(BuildContext context) {
-  return InkWell(
-    onTap: () {
-      // Get.to(() => ChatScreen(messageData: messageData),
-      //     transition: Transition.zoom);
-    },
-    child: Container(
-      height: 95,
-      margin: const EdgeInsets.symmetric(horizontal: 5),
-      child: Row(
-        children: [
-          const Padding(
-              padding: EdgeInsets.all(20),
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-              )),
-          Expanded(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    // child: Text(messageData.senderName,
-                    //     overflow: TextOverflow.ellipsis,
-                    //     style: const TextStyle(
-                    //         letterSpacing: 0.2,
-                    //         wordSpacing: 1.5,
-                    //         fontWeight: FontWeight.w900)),
-                  ),
-                  SizedBox(
-                    height: 20,
-                    // child: Text(
-                    //   messageData.message,
-                    //   style: const TextStyle(
-                    //       fontSize: 15,
-                    //       color: AppColors.textFaded,
-                    //       overflow: TextOverflow.ellipsis),
-                    // ),
-                  )
-                ]),
+        // final messages = snapshot.data.documents.reversed;
+
+        List<Widget> messageWidgets = snapshot.data!.docs.map<Widget>((m) {
+          final data = m.data as dynamic;
+          final messageText = data()['text'];
+          final messageSender = data()['sender'];
+          final currentUser = _loggedInuser!.email;
+          final timeStamp = data()['timestamp'];
+          return MessageTile(
+            sender: messageSender,
+            text: messageText,
+            timestamp: timeStamp,
+            isMe: currentUser == messageSender,
+          );
+        }).toList();
+
+        return Expanded(
+          child: ListView(
+            reverse: true,
+            padding:
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
+            children: messageWidgets,
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const SizedBox(
-                  height: 4,
-                ),
-                // Text(
-                //   messageData.dateMessage.toUpperCase(),
-                //   style: const TextStyle(
-                //       fontSize: 11,
-                //       letterSpacing: -0.2,
-                //       fontWeight: FontWeight.w600,
-                //       color: AppColors.textFaded),
-                // ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Container(
-                  width: 18,
-                  height: 18,
-                  decoration: const BoxDecoration(
-                      color: AppColors.secondary, shape: BoxShape.circle),
-                  child: const Center(
-                    child: Text(
-                      '1',
-                      style:
-                          TextStyle(fontSize: 10, color: AppColors.textLigth),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
+        );
+      },
+    );
+  }
 }

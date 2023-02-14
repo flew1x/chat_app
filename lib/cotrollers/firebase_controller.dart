@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../model/user_data.dart';
+import '../model/user_model.dart';
 import '../services/firebase_helper.dart';
 
 final firebaseControllerProvider = Provider((ref) {
@@ -23,21 +23,13 @@ class AuthController {
     required this.ref,
   });
 
-  void saveUserData(
-      BuildContext context, String username, File? profileAvatar) {
-    firebaseHelper.saveData(
-        username: username,
-        profileAvatar: profileAvatar,
-        context: context,
-        ref: ref);
+  void saveProfileAvatar(BuildContext context, File? profileAvatar) {
+    firebaseHelper.saveProfileAvatar(
+        context: context, profileAvatar: profileAvatar, ref: ref);
   }
 
   Stream<UserModel> userDataById(String userId) {
     return firebaseHelper.userData(userId);
-  }
-
-  void setUserState(bool isOnline) {
-    firebaseHelper.setUserState(isOnline);
   }
 
   Future<UserModel?> getUserData() async {
@@ -52,7 +44,7 @@ class AuthController {
 
   void signUp(TextEditingController email, TextEditingController password,
       BuildContext context) {
-    firebaseHelper.signUp(email, password, context);
+    firebaseHelper.signUp(email, password, context, ref);
   }
 
   void signOut() {

@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:chat_app/model/user_data.dart';
+import 'package:chat_app/model/user_model.dart';
 import 'package:chat_app/services/storage_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,10 +21,14 @@ final firebaseHelperProvider = Provider(
 class FirebaseHelper {
   final FirebaseAuth auth;
   final FirebaseFirestore firestore;
-  FirebaseHelper({
-    required this.auth,
-    required this.firestore,
-  });
+  FirebaseHelper({required this.auth, required this.firestore, this.uid});
+
+  final CollectionReference userCollection =
+      FirebaseFirestore.instance.collection("users");
+  final CollectionReference groupCollection =
+      FirebaseFirestore.instance.collection("groups");
+
+  final String? uid;
 
   Stream<UserModel> userData(String userId) {
     return firestore.collection('users').doc(userId).snapshots().map(
@@ -34,10 +38,34 @@ class FirebaseHelper {
         );
   }
 
-  void setUserState(bool isOnline) async {
-    await firestore.collection('users').doc(auth.currentUser!.uid).update({
-      'isOnline': isOnline,
-    });
+  void firstSave({
+    required String name,
+    required File? profileAvatar,
+    required ProviderRef ref,
+    required BuildContext context,
+  }) async {
+    try {
+      String uid = auth.currentUser!.uid;
+      String photoUrl =
+          'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png';
+
+      if (profileAvatar != null) {
+        photoUrl = await ref.read(commonFirebaseStorageProvider).storeFile(
+              'profileAvatar/$uid',
+              profileAvatar,
+            );
+      }
+
+      var user = UserModel(
+        uid: uid,
+        profileAvatar: photoUrl,
+        username: '',
+      );
+
+      await firestore.collection('users').doc(uid).set(user.toMap());
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   Future<UserModel?> getCurrentUserData() async {
@@ -51,32 +79,36 @@ class FirebaseHelper {
     return user;
   }
 
-  void saveData({
-    required String username,
+  Future<void> saveUsername(
+      {required String username, required BuildContext context}) async {
+    firestore
+        .collection("users")
+        .doc(auth.currentUser?.uid)
+        .update({'username': username})
+        .then((value) => log("Username changed to $username"))
+        .catchError((err) => log(err.toString()));
+  }
+
+  Future<void> saveProfileAvatar({
     required File? profileAvatar,
     required ProviderRef ref,
     required BuildContext context,
   }) async {
     try {
       String uid = auth.currentUser!.uid;
-      String photoUrl =
-          'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png';
 
-      if (profileAvatar != null) {
-        photoUrl = await ref.read(commonFirebaseStorageProvider).storeFile(
-              'profilePic/$uid',
-              profileAvatar,
-            );
-      }
+      final String photoUrl =
+          await ref.read(commonFirebaseStorageProvider).storeFile(
+                'profileAvatar/$uid',
+                profileAvatar!,
+              );
 
-      var user = UserModel(
-        name: username,
-        uid: uid,
-        profileAvatar: photoUrl,
-        isOnline: true,
-      );
-
-      await firestore.collection('users').doc(uid).set(user.toMap());
+      firestore
+          .collection("users")
+          .doc(auth.currentUser?.uid)
+          .update({'profileAvatar': photoUrl})
+          .then((value) => log("Username changed to $photoUrl"))
+          .catchError((err) => log(err.toString()));
     } catch (e) {
       log(e.toString());
     }
@@ -107,12 +139,17 @@ class FirebaseHelper {
     }
   }
 
-  Future<void> signUp(TextEditingController email,
-      TextEditingController password, BuildContext context) async {
+  Future<void> signUp(
+      TextEditingController email,
+      TextEditingController password,
+      BuildContext context,
+      ProviderRef ref) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text, password: password.text);
       log("was created");
+      firstSave(
+          name: email.text, profileAvatar: null, context: context, ref: ref);
       // ignore: use_build_context_synchronously
       signIn(email, password, context);
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
