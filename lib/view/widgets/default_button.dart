@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class Button extends StatelessWidget {
+class DefaultButton extends StatelessWidget {
   final String text;
   final Function()? onPressed;
   final bool lightTheme;
   final Color btnClr;
 
-  const Button(
+  const DefaultButton(
       {Key? key,
       required this.text,
       required this.onPressed,

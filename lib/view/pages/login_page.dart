@@ -1,11 +1,11 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:chat_app/helpers/firebase_helper.dart';
 import 'package:chat_app/view/themes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
-import '../../cotrollers/firebase_controller.dart';
-import '../widgets/button.dart';
+import '../widgets/default_button.dart';
 import '../widgets/sign_input_field.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -78,7 +78,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      InputField(
+                      SignInputField(
                         textController: _emailTextController,
                         isPassword: false,
                         isRegistration: false,
@@ -87,7 +87,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      InputField(
+                      SignInputField(
                         hint: "Пароль",
                         isRegistration: false,
                         textController: _passwordTextController,
@@ -97,11 +97,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 100),
-                    child: Button(
+                    child: DefaultButton(
                       btnClr: AppColors.greenBtn,
                       text: "Войти",
                       onPressed: (() {
-                        ref.read(firebaseControllerProvider).signIn(
+                        ref.read(firebaseHelperProvider).signIn(
                             _emailTextController,
                             _passwordTextController,
                             context);

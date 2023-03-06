@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class InputField extends StatelessWidget {
+class SignInputField extends StatelessWidget {
   final String hint;
   final bool isPassword;
   final bool isRegistration;
   final bool isLogin;
   final TextEditingController textController;
 
-  const InputField(
+  const SignInputField(
       {Key? key,
       required this.hint,
       required this.isPassword,

@@ -1,7 +1,7 @@
 import 'package:chat_app/view/pages/login_page.dart';
 import 'package:chat_app/view/pages/sign_up_page.dart';
 import 'package:chat_app/view/themes/theme.dart';
-import 'package:chat_app/view/widgets/button.dart';
+import 'package:chat_app/view/widgets/default_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -32,7 +32,7 @@ class StartScreen extends StatelessWidget {
               const SizedBox(
                 height: 60,
               ),
-              Button(
+              DefaultButton(
                   btnClr: AppColors.greenBtn,
                   text: "Войти",
                   onPressed: () {
@@ -43,7 +43,7 @@ class StartScreen extends StatelessWidget {
               const SizedBox(
                 height: 15,
               ),
-              Button(
+              DefaultButton(
                   btnClr: Colors.white,
                   text: "Зарегестрироваться",
                   onPressed: () {

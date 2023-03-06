@@ -1,13 +1,13 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:chat_app/cotrollers/firebase_controller.dart';
-import 'package:chat_app/services/firebase_helper.dart';
+import 'package:chat_app/models/user_model.dart';
+import 'package:chat_app/helpers/firebase_helper.dart';
 import 'package:chat_app/view/themes/theme.dart';
-import 'package:chat_app/view/widgets/loader.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:chat_app/view/screens/start_screen.dart';
-import 'package:chat_app/view/widgets/button.dart';
+import 'package:chat_app/view/widgets/default_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -39,8 +39,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ref.watch(userDataProvider).when(
-        data: (user) => Padding(
+    return FutureBuilder<UserModel?>(
+        future: ref.read(firebaseHelperProvider).getCurrentUserData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {}
+          return Scaffold(
+            body: Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: Column(
                 children: [
@@ -58,7 +62,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         children: [
                           Stack(
                             children: [
-                              user?.profileAvatar == null
+                              snapshot.data?.profileAvatar == null
                                   ? const CircleAvatar(
                                       backgroundImage: NetworkImage(
                                           'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png'),
@@ -66,8 +70,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                     )
                                   : CircleAvatar(
                                       key: UniqueKey(),
-                                      backgroundImage:
-                                          NetworkImage(user!.profileAvatar),
+                                      backgroundImage: NetworkImage(
+                                          snapshot.data!.profileAvatar),
                                       radius: 50,
                                     ),
                               IconButton(
@@ -84,9 +88,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  user?.username == null
+                                  snapshot.data?.username == null
                                       ? "Unknown"
-                                      : user!.username,
+                                      : snapshot.data!.username,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 30),
@@ -108,19 +112,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ],
                       )),
                   const SizedBox(
-                    height: 20,
-                  ),
-                  Button(
-                      text: "Добавить в друзья",
-                      onPressed: () {
-                        _addFriendDialog(context);
-                      },
-                      lightTheme: false,
-                      btnClr: AppColors.greenBtn),
-                  const SizedBox(
                     height: 17,
                   ),
-                  Button(
+                  DefaultButton(
                       text: "Выйти",
                       onPressed: () {
                         FirebaseAuth.instance
@@ -146,67 +140,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ],
               ),
             ),
-        error: (err, trace) {
-          log(err.toString());
-          return const Loader();
-        },
-        loading: () {
-          return const Loader();
-        });
-  }
-
-  _addFriendDialog(BuildContext context) {
-    return showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(builder: ((context, setState) {
-            return AlertDialog(
-              backgroundColor: AppColors.cardDark,
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              title: const Text(
-                "Добавить в друзья",
-                textAlign: TextAlign.left,
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.green),
-                            borderRadius: BorderRadius.circular(20)),
-                        errorBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.red),
-                            borderRadius: BorderRadius.circular(20)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
-                            borderRadius: BorderRadius.circular(20))),
-                  ),
-                ],
-              ),
-              actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor),
-                  child: const Text("Назад"),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor),
-                  child: const Text("Добавить"),
-                ),
-              ],
-            );
-          }));
+          );
         });
   }
 

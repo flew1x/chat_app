@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class GlowingActionButton extends StatelessWidget {
-  const GlowingActionButton({
+class SendButton extends StatelessWidget {
+  const SendButton({
     Key? key,
     required this.color,
     required this.icon,

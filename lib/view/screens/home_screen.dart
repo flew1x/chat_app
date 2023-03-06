@@ -3,28 +3,25 @@ import 'package:chat_app/cotrollers/firebase_controller.dart';
 import 'package:chat_app/view/pages/home_page.dart';
 import 'package:chat_app/view/pages/messages_page.dart';
 import 'package:chat_app/view/pages/settings_page.dart';
-import 'package:chat_app/view/widgets/loader.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../model/user_model.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import '../../models/user_model.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: HomeScreenState(),
     );
   }
 }
 
-@immutable
 class HomeScreenState extends ConsumerStatefulWidget {
-  HomeScreenState({super.key});
-
-  UserModel? user;
+  const HomeScreenState({super.key});
 
   @override
   ConsumerState<HomeScreenState> createState() => _HomeScreenStateState();
@@ -32,9 +29,8 @@ class HomeScreenState extends ConsumerStatefulWidget {
 
 class _HomeScreenStateState extends ConsumerState<HomeScreenState> {
   var _currentIndex = 0;
-
-  final titlesOfPage = ['Главная', 'Сообщения', 'Настройки'];
-  final pages = [const HomePage(), const MessagePage(), const SettingsPage()];
+  UserModel? user;
+  final _titlesOfPage = ['Главная', 'Сообщения', 'Настройки'];
 
   void onTap(int index) {
     setState(() {
@@ -43,38 +39,15 @@ class _HomeScreenStateState extends ConsumerState<HomeScreenState> {
   }
 
   void initUser() async {
-    widget.user =
-        await ref.read(firebaseControllerProvider).getCurrentUserData();
+    user = await ref.read(firebaseControllerProvider).getUserData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: _bottomNavBar(),
-      body: Center(child: pages[_currentIndex]),
+      body: _bottomNavBar(),
       appBar: _appBar(),
     );
-  }
-
-  _bottomNavBar() {
-    return BottomNavigationBar(
-        backgroundColor: Colors.transparent,
-        selectedItemColor: const Color.fromARGB(255, 255, 255, 255),
-        onTap: onTap,
-        iconSize: 30,
-        currentIndex: _currentIndex,
-        unselectedItemColor: Colors.grey.withOpacity(0.5),
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        elevation: 0,
-        items: const [
-          BottomNavigationBarItem(
-              label: "Домашняя", icon: Icon(Icons.home_filled)),
-          BottomNavigationBarItem(
-              label: "Сообщения", icon: Icon(Icons.message_rounded)),
-          BottomNavigationBarItem(
-              label: "Настройки", icon: Icon(Icons.settings)),
-        ]);
   }
 
   _appBar() {
@@ -83,7 +56,7 @@ class _HomeScreenStateState extends ConsumerState<HomeScreenState> {
             return AppBar(
                 backgroundColor: Colors.black12,
                 elevation: 0,
-                title: Text(titlesOfPage[_currentIndex]),
+                title: Text(_titlesOfPage[_currentIndex]),
                 leading: Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: user?.profileAvatar == null
@@ -103,5 +76,66 @@ class _HomeScreenStateState extends ConsumerState<HomeScreenState> {
           },
           loading: () {},
         );
+  }
+
+  late final PersistentTabController _controller =
+      PersistentTabController(initialIndex: 0);
+
+  List<Widget> _buildScreens() {
+    return [const HomePage(), const MessagePage(), const SettingsPage()];
+  }
+
+  List<PersistentBottomNavBarItem> _navBarsItems() {
+    return [
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.home),
+        title: ("Домашняя"),
+        activeColorPrimary: CupertinoColors.white,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.chat_bubble),
+        title: ("Сообщения"),
+        activeColorPrimary: CupertinoColors.white,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.settings),
+        title: ("Настройки"),
+        activeColorPrimary: CupertinoColors.white,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+    ];
+  }
+
+  _bottomNavBar() {
+    return PersistentTabView(
+      context,
+      controller: _controller,
+      screens: _buildScreens(),
+      items: _navBarsItems(),
+      confineInSafeArea: true,
+      backgroundColor: Colors.transparent,
+      handleAndroidBackButtonPress: true,
+      resizeToAvoidBottomInset: true,
+      stateManagement: true,
+      hideNavigationBarWhenKeyboardShows: true,
+      decoration: NavBarDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        colorBehindNavBar: Colors.transparent,
+      ),
+      popAllScreensOnTapOfSelectedTab: true,
+      popActionScreens: PopActionScreensType.all,
+      itemAnimationProperties: const ItemAnimationProperties(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.ease,
+      ),
+      screenTransitionAnimation: const ScreenTransitionAnimation(
+        animateTabTransition: false,
+        curve: Curves.ease,
+        duration: Duration(milliseconds: 200),
+      ),
+      navBarStyle: NavBarStyle.style12,
+    );
   }
 }

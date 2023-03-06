@@ -1,8 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:chat_app/model/user_model.dart';
-import 'package:chat_app/services/storage_helper.dart';
+import 'package:chat_app/models/user_model.dart';
+import 'package:chat_app/helpers/storage_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +30,7 @@ class FirebaseHelper {
 
   final String? uid;
 
-  Stream<UserModel> userData(String userId) {
+  Stream<UserModel> userDataById(String userId) {
     return firestore.collection('users').doc(userId).snapshots().map(
           (event) => UserModel.fromMap(
             event.data()!,
@@ -59,13 +59,26 @@ class FirebaseHelper {
       var user = UserModel(
         uid: uid,
         profileAvatar: photoUrl,
-        username: '',
+        username: 'Unknown',
       );
 
       await firestore.collection('users').doc(uid).set(user.toMap());
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  sendMessage(String messageText, UserModel user) {
+    firestore.collection('messages').add({
+      'sender': getUserEmail(),
+      'text': messageText,
+      'timestamp': Timestamp.now(),
+      'avatar': user.profileAvatar
+    });
+  }
+
+  getUserEmail() {
+    return auth.currentUser?.email;
   }
 
   Future<UserModel?> getCurrentUserData() async {

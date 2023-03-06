@@ -1,11 +1,6 @@
-import 'dart:developer';
-import 'package:chat_app/cotrollers/firebase_controller.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/view/pages/auth_page.dart';
-import 'package:chat_app/view/screens/home_screen.dart';
-import 'package:chat_app/view/screens/start_screen.dart';
 import 'package:chat_app/view/themes/theme.dart';
-import 'package:chat_app/view/widgets/loader.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +19,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GetMaterialApp(
       theme: AppTheme().dark,
-      home: AuthPage(),
+      home: const AuthPage(),
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
     );

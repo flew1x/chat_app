@@ -1,11 +1,10 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chat_app/cotrollers/firebase_controller.dart';
-import 'package:chat_app/services/firebase_helper.dart';
 import 'package:chat_app/view/themes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
-import '../widgets/button.dart';
+import '../widgets/default_button.dart';
 import '../widgets/sign_input_field.dart';
 
 class SignUpPage extends ConsumerStatefulWidget {
@@ -62,7 +61,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  InputField(
+                  SignInputField(
                     textController: _loginController,
                     hint: "Логин",
                     isPassword: false,
@@ -72,7 +71,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  InputField(
+                  SignInputField(
                     textController: _emailController,
                     hint: "Почта",
                     isPassword: false,
@@ -87,7 +86,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  InputField(
+                  SignInputField(
                     textController: _passwordController,
                     hint: "Пароль",
                     isPassword: true,
@@ -96,7 +95,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  InputField(
+                  SignInputField(
                     textController: _repeatPasswordController,
                     hint: "Повторите пароль",
                     isRegistration: true,
@@ -106,7 +105,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 120),
-                child: Button(
+                child: DefaultButton(
                   btnClr: AppColors.greenBtn,
                   text: "Зарегистрироваться",
                   onPressed: () {
